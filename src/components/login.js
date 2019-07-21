@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Route, Link  } from 'react-router-dom'
 import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
 import { connect } from 'react-redux'
-import { login } from '../actions/user.action'
+import { login, logout } from '../actions/user.action'
 import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => ({
@@ -12,6 +12,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   login: (email, password) => { dispatch(login(email, password)) },
+  logout: () => { dispatch(logout()) }
 })
 
 class Login extends Component{
@@ -49,7 +50,12 @@ class Login extends Component{
     this.setState({ [name]: value });
   }
 
+  handleLogout = (e) => {
+    this.props.logout()
+  }
+
   // shouldComponentUpdate(nextProps) {
+  //   console.log(nextProps.auth)
   //   return this.props.auth !== nextProps.auth;
   // }
 
@@ -58,7 +64,7 @@ class Login extends Component{
     return(
       <div className = "login-component"> 
         <div className = "center-screen container col-4">
-          <h4> Login {this.props.auth.email}</h4>
+          <h4> Login </h4>
           <br/>
           <Form layout="inline" onSubmit={this.handleSubmit}>
             <Row> 
@@ -70,7 +76,8 @@ class Login extends Component{
             </Row>
             <br/>
             <Row>  
-              <Button type="primary col-2 offset-5" htmlType="submit" onClick = {this.eiei}> Login </Button> 
+              <Button type="primary col-2 " htmlType="submit" > Login </Button> 
+              <Button type="primary col-2 offset-8" htmlType="button" onClick = {this.handleLogout} > Logout </Button>
             </Row>
           </Form>
         </div>

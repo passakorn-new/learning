@@ -1,26 +1,54 @@
 import { userConstants } from '../constants/user.constans'
-// let user = JSON.parse(localStorage.getItem('user'));
-// const initialState = user ? { loggedIn: true, user } : {};
+import  Auth  from '../firebase/index'
+
 const initialState = []
 
-export default (state = initialState, action) => {
+async function checkLogin () {
+  let user = await Auth.currentUser
+  console.log(user)
+  return user ? true : false 
+}
 
+async function getLoginFirebase (user) {
+  let status = await Auth.signInWithEmailAndPassword(user.email, user.password)
+  return status
+}
+
+async function getLogoutFirebase () {
+  try{
+    await Auth.signOut()
+    return false
+  } 
+  catch(e){
+    return true
+  }
+}
+
+export default (state = initialState, action) => {
+  let status;
   switch (action.type) {
     case userConstants.LOGIN_REQUEST:
-    console.log(state)
-      state = {
+      status =  checkLogin() ? true : getLoginFirebase(action.user)
+       state = {
         ...state,
-        user: action.user
+        user: action.user,
+        isLogin: status
       }
       console.log(state)
       return state
     case userConstants.LOGOUT:
-      return {
-        ...state
+      status = getLogoutFirebase()
+      console.log(status)
+      state =  {
+        ...state,
+        isLogin: status
       };
+      console.log(state)
+      return state
   
     default:
       return state
   }
 }
+  
 
