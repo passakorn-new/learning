@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+
 import Button from 'antd/es/button';
-import { Route, Link  } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 class Home extends Component{
   render(){

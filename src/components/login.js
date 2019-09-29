@@ -1,10 +1,10 @@
+import { Button, Form, Input, Row } from 'antd';
 import React, { Component } from 'react';
-// import { login } from '../actions/index'
-import { Route, Link  } from 'react-router-dom'
-import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
-import { connect } from 'react-redux'
-import { login, logout } from '../actions/user.action'
+import { checkLogin, login, logout } from '../actions/user.action'
+
 import PropTypes from 'prop-types';
+import { Spin } from 'antd';
+import { connect } from 'react-redux'
 
 const mapStateToProps = (state) => ({
   auth: state.auth
@@ -12,7 +12,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   login: (email, password) => { dispatch(login(email, password)) },
-  logout: () => { dispatch(logout()) }
+  logout: () => { dispatch(logout()) },
+  checkLogin: () => { dispatch(checkLogin()) }
 })
 
 class Login extends Component{
@@ -26,10 +27,10 @@ class Login extends Component{
 
   constructor(props) {
     super(props);
-    
+    this.props.checkLogin()
     this.state = {
-      email: '',
-      password: ''
+      email: 'test1@example.com',
+      password: 'testtest'
     };
   }
 
@@ -54,32 +55,52 @@ class Login extends Component{
     this.props.logout()
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   console.log(nextProps.auth)
-  //   return this.props.auth !== nextProps.auth;
-  // }
+  getButtonLogin = (isLogin) =>{
+    let buttonLogin
+    if (isLogin) {
+      buttonLogin = ''
+    } else {
+      buttonLogin = <Button type="primary col-2 " htmlType="submit" > Login </Button>;
+    }
+    return buttonLogin
+  }
+
+
+  getButtonLogout = (isLogin) =>{
+    let buttonLogout
+    if (isLogin) {
+      buttonLogout = <Button type="primary col-2 offset-10" htmlType="button" onClick = {this.handleLogout} > Logout </Button>
+    } else {
+      buttonLogout = ''
+    }
+    return buttonLogout
+  }
 
   render(){
     let { email, password } = this.state
+    let { isLogin, loading } = this.props.auth
+
     return(
       <div className = "login-component"> 
         <div className = "center-screen container col-4">
           <h4> Login </h4>
           <br/>
-          <Form layout="inline" onSubmit={this.handleSubmit}>
-            <Row> 
-              <Input placeholder="Email" type = "email" onChange={this.handleChange} value = {email} name = "email"/> 
-            </Row>
-            <br/>
-            <Row> 
-              <Input placeholder="Password" type = "password" onChange={this.handleChange} value = {password} name = "password"/> 
-            </Row>
-            <br/>
-            <Row>  
-              <Button type="primary col-2 " htmlType="submit" > Login </Button> 
-              <Button type="primary col-2 offset-8" htmlType="button" onClick = {this.handleLogout} > Logout </Button>
-            </Row>
-          </Form>
+          <Spin tip="Loading..." spinning={loading}>
+            <Form layout="inline" onSubmit={this.handleSubmit}>
+              <Row> 
+                <Input placeholder="Email" type = "email" onChange={this.handleChange} value = {email} name = "email"/> 
+              </Row>
+              <br/>
+              <Row> 
+                <Input placeholder="Password" type = "password" onChange={this.handleChange} value = {password} name = "password"/> 
+              </Row>
+              <br/>
+              <Row> 
+                {this.getButtonLogin(isLogin)}
+                {this.getButtonLogout(isLogin)}
+              </Row>
+            </Form>
+          </Spin>
         </div>
       </div>
     );
